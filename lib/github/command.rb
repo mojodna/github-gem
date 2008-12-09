@@ -22,7 +22,11 @@ module GitHub
     def call(*args)
       arity = method(:command).arity
       args << nil while args.size < arity
-      send :command, *args
+      if arity == 1 && args.size > 1
+        send :command, args
+      else
+        send :command, *args
+      end
     end
 
     def helper

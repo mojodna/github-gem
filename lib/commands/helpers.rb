@@ -53,10 +53,15 @@ end
 
 helper :resolve_commits do |treeish|
   if treeish
-    if treeish.match(/\.\./)
-      commits = `git rev-list #{treeish}`.split("\n")
-    else
-      commits = `git rev-parse #{treeish}`.split("\n")
+    commits = []
+    # the alternative is to join all provided treeishes and shell out once
+    # but that won't handled mixed input
+    treeish.each do |t|
+      if t.match(/\.\./)
+        commits += `git rev-list #{t}`.split("\n")
+      else
+        commits += `git rev-parse #{t}`.split("\n")
+      end
     end
   else
     # standard in

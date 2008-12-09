@@ -277,4 +277,17 @@ random
       @helper.open "http://www.google.com"
     end
   end
+
+  helper :resolve_commits do
+    it "should ignore individual SHAs" do
+      @helper.should_receive(:`).with("git rev-parse 8c5db4").and_return "8c5db4742d2588b064a5de285d1537e7aad46a9d"
+      @helper.resolve_commits("8c5db4")
+    end
+
+    it "should ignore multiple SHAs" do
+      @helper.should_receive(:`).with("git rev-parse 8c5db4").and_return "8c5db4742d2588b064a5de285d1537e7aad46a9d"
+      @helper.should_receive(:`).with("git rev-parse a0271b").and_return "a0271befc36dec172f67f8ebd8c08c0bee8a2c60"
+      @helper.resolve_commits(["8c5db4", "a0271b"])
+    end
+  end
 end
